@@ -2,6 +2,12 @@
 @section('title', 'Roles')
 @section('content')
     <div class="card">
+        @if (session('massage'))
+            <div>{{(session('massage'))}}</div>
+        @endsection
+            
+        @endif
+
         <h1>
             Danh sách vai trò
         </h1>

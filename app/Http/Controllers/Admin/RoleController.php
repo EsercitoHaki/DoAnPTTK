@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Models\Role;
 use App\Http\Controllers\Controller;
+use App\Models\Permisson;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -25,7 +26,8 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return view('admin.roles.create');
+        $permissions = Permisson::all()->groupBy('group');
+        return view('admin.roles.create', compact('permissions'));
     }
 
     /**
@@ -36,7 +38,12 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $dataCreate = $request->all();
+        $dataCreate['guard_name'] = 'web';
+        $role = Role::create($dataCreate);
+
+        $role->permissions()->attach($dataCreate['permission_ids']);
+        return to_route('roles.index')->with(['message' => 'create suceess']);
     }
 
     /**
