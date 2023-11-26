@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 use App\Models\Role;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Roles\CreateRoleRequest;
+use App\Http\Requests\Roles\UpdateRoleRequest;
 use App\Models\Permisson;
 use Illuminate\Http\Request;
 
@@ -36,7 +38,7 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRoleRequest $request)
     {
         $dataCreate = $request->all();
         $dataCreate['guard_name'] = 'web';
@@ -65,7 +67,9 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        return view('admin.roles.edit');
+        $role = Role::with('permissions')->findOrFail($id);
+        $permissions = Permisson::all()->groupBy('group');
+        return view('admin.roles.edit', compact('role', 'permissions'));
     }
 
     /**
@@ -75,9 +79,14 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRoleRequest $request, $id)
     {
-        //
+        $role = Role::findOrFail($id);
+        $dataUpdate = $request->all();
+        $role->update($dataUpdate);
+        $role->permissions()->sync($dataUpdate['permission_ids']);
+
+        return to_route('roles.index')->with(['message' => 'update suceess']);
     }
 
     /**
@@ -88,6 +97,7 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Role::destroy($id);
+        return to_route('roles.index')->with(['message' => 'delete suceess']);
     }
 }

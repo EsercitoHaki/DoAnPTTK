@@ -25,12 +25,19 @@
                 </div> --}}
                 <div class="input-group input-group-static mb-4">
                     <label>Tên</label>
-                    <input name="name" type="text" class="form-control">
+                    <input name="name" value="{{ old('name')}}" type="text" class="form-control">
+
+                    @error('name')
+                        <span class="text-danger">{{ $message}}</span>
+                    @enderror
                 </div>
 
                 <div class="input-group input-group-static mb-4">
                     <label>Tên hiển thị</label>
-                    <input name="display_name" type="text" class="form-control">
+                    <input name="display_name" value="{{ old('display_name')}}" type="text" class="form-control">
+                    @error('display_name')
+                        <span class="text-danger">{{ $message}}</span>
+                    @enderror
                 </div>
                 
                 <div class="input-group input-group-static mb-4">
@@ -39,7 +46,11 @@
                       <option value="system">System</option>
                       <option value="user">User</option>
                     </select>
-                  </div>
+
+                    @error('group')
+                        <span class="text-danger"> {{ $message}}</span>
+                    @enderror
+                </div>
 
                 <div class="form-group">
                     <label for="">Quyền</label>
